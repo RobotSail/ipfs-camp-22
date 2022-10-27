@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-ipfs-node
+  labels:
+    name: my-ipfs-node
+spec:
+  volumes:
+    - name: ipfs-storage
+      persistentVolumeClaim:
+        claimName: ipfs-data
+  containers:
+  - name: my-ipfs-node
+    image: docker.io/ipfs/kubo:latest
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 4001
+        name: "swarm"
+        protocol: TCP
+      - containerPort: 5001
+        name: "webui"
+        protocol: TCP
+    volumeMounts:
+      - name: ipfs-storage
+        mountPath: "/data/ipfs"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ipfs-ui
+spec:
+  type: LoadBalancer
+  selector:
+    name: my-ipfs-node
+  ports:
+    - port: 5001
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ipfs-data
+spec:
+  resources:
+    requests:
+      storage: 2Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
