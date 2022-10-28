@@ -12,6 +12,12 @@ spec:
   containers:
   - name: my-ipfs-node
     image: docker.io/ipfs/kubo:latest
+    env:
+      - name: IPFS_SWARM_KEY
+        valueFrom:
+          secretKeyRef:
+            name: ipfs-secrets
+            key: swarmKey
     resources:
       limits:
         memory: "128Mi"
@@ -49,3 +55,12 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ipfs-secrets
+data:
+  swarmKey: |
+    L2tleS9zd2FybS9wc2svMS4wLjAvCi9iYXNlMTYvCjRmNGY4OTRjOGFkNmQwMzM1NWFiYjRkMWIx
+    NGYwODA5MGFlYmY5ZjcwYzVjNTliZjBhOWFkNzZmNDFlZjQ2N2UK

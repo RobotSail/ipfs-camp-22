@@ -2,7 +2,7 @@
 set -e -o pipefail
 
 # imports utils
-source ./hack/utils.sh
+source ./scripts/utils.sh
 
 # run commands or install
 case "${1:-}" in
